@@ -5,7 +5,7 @@ import dotenv from 'dotenv'; // hassas bilgileri burada tutuyoruz
 
 dotenv.config() // .dotenv icindeki anahtarlari bu sekilde kullanabiliyoruz
 
-const app = express() // server i bu sekilde olusturuyoruz. suan bir express server olusturduk
+const app = express() // server i bu sekilde olusturuyoruz. suan bir express server olusturduk.
 
 app.get('/', (req, res) => {
     res.json({ message: '8080. porta yapilan get istegi' })
