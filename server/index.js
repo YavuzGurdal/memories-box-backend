@@ -1,7 +1,8 @@
 import express from 'express'; // db icin bu paketi kullaniyorum
-import mongoose from 'mongoose'; // mongodb ile baglanti kurmak icin
+import mongoose from 'mongoose'; // db ile yani mongodb ile baglanti kurmak icin
 import cors from 'cors';
 import dotenv from 'dotenv'; // hassas bilgileri burada tutuyoruz
+
 
 dotenv.config() // .dotenv icindeki anahtarlari bu sekilde kullanabiliyoruz
 
@@ -12,5 +13,11 @@ app.get('/', (req, res) => {
 })
 
 app.listen(process.env.PORT, () => { // hangi porttan islem yapilacagini burda yaziyoruz. ayrica bir callback fonksiyon aliyor
-    console.log(`${process.env.PORT}. porttan dinliyor`);
+    mongoose.connect(process.env.MONGO_URI, { // burdan db ye baglaniyorum
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        //useFindAndModify: true,
+    })
+        .then(() => console.log('db connected'))
+        .catch((err) => console.log(err))
 })
