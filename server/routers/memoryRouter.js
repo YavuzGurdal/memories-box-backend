@@ -1,16 +1,15 @@
 // memories url'ine gelen istekler bu router dan karsilanacak. yani buradan islem gorecek
 import express from 'express';
 import mongoose from 'mongoose';
-import mongoosefrom from 'mongoose';
 
 import Memory from '../db/memoryModel.js' // sonuna js ekliyorum. package.json "type": "module" yazdigim icin. diger turlu hata veriyor
 
 const router = express.Router() // express den geliyor
 
 // GET ALL MEMORIES FROM DB
-router.get('/', async (req, res) => { // '/' index,js de verdigimiz '/memories' i ifade ediyor
+router.get('/', async (req, res) => { // '/' index.js de verdigimiz '/memories' i ifade ediyor
     try {
-        const memories = await Memory.find() // memories db den gelen degerleri tutacak. 
+        const memories = await Memory.find() // memories db den gelen degerleri tutacak. // mongoose metodu
         // Memory.find() seklinde yazdigimda butun memeriesleri getiriyor. bu islem icin Memory modelini kullaniyor.
         // await kullanmazsam memories bos olur. cunku db den bu bilgileri alirken cok azda olsa bir zaman geciyor.
 
@@ -29,8 +28,10 @@ router.get('/:id', async (req, res) => {
             res.status(404).json({ message: 'Memory id is not valid' })
         }
 
-        const memory = await Memory.findById(id)
-        if (!memory) return
+        const memory = await Memory.findById(id) // mongoose metodu
+        if (!memory) {
+            return res.status(404).json({ message: 'Memory not found' })
+        }
 
         res.status(200).json(memory)
     } catch (error) {
@@ -41,24 +42,55 @@ router.get('/:id', async (req, res) => {
 // CREATE A MEMORY
 router.post('/', async (req, res) => {
     try {
-        const memory = req.body // kullanicinin yaptigi req'in icinde body nin icinden bu bilgileri aldim
+        const memory = req.body // kullanicinin yaptigi req'in icindeki body nin icinden bu bilgileri aldim
 
-        const createdMemory = await Memory.create(memory) // create metodunu kullandim
+        const createdMemory = await Memory.create(memory) // create metodunu kullandim // mongoose metodu
 
         res.status(201).json(createdMemory)
     } catch (error) {
-        res.json({ message: 'Create memory failed' })
+        res.json({ message: 'Memory create failed' })
     }
 })
 
 // UPDATE A MEMORY
 router.put('/:id', async (req, res) => {
-    res.json({ message: 'update a memory' })
+    try {
+        const { id } = req.params // bu sekilde id'yi direk alabiliyorum. kullanicin yaptigi request icinde bu bilgi mevcut olacak
+
+        if (!mongoose.Types.ObjectId.isValid(id)) { // id mongodb id'si degilse demek
+            res.status(404).json({ message: 'Memory id is not valid' })
+        }
+
+        const { title, content, creator, image } = req.body
+
+        const updatedMemory = await Memory.findByIdAndUpdate(
+            id,
+            { _id: id, title, content, creator, image },
+            { new: true } // update edilen datayi dondurmesi icin. burda update edilen memoryyi donduruyor
+        )
+
+        res.status(200).json(updatedMemory)
+
+    } catch (error) {
+        res.json({ message: 'Memory update failed' })
+    }
 })
 
 // DELETE A MEMORY
 router.delete('/:id', async (req, res) => {
-    res.json({ message: 'delete a memory' })
+    try {
+        const { id } = req.params // bu sekilde id'yi direk alabiliyorum. kullanicin yaptigi request icinde bu bilgi mevcut olacak
+
+        if (!mongoose.Types.ObjectId.isValid(id)) { // id mongodb id'si degilse demek
+            res.status(404).json({ message: 'Memory id is not valid' })
+        }
+
+        await Memory.findOneAndDelete(id)
+
+        res.status(200).json({ message: 'Memory has been deleted' })
+    } catch (error) {
+        res.json({ message: 'Memory delete failed' })
+    }
 })
 
 export default router

@@ -22,7 +22,7 @@ const memoSchema = mongoose.Schema({ // icerik icin bu semayi olusturduk
     }
 })
 
-const Memory = mongoose.model('memo', memoSchema) // memo modelin adi db de bu ismi alacak, memoSchema modelin semasi (yani bu model ne yapacak) 
+const Memory = mongoose.model('memo', memoSchema) // memo modelin adi db de bu isim ile kaydedilecek, memoSchema modelin semasi (yani bu model db de nasil olacak) 
 // mongoose un model metodu ile bunu db ye gonderiyoruz
 
 export default Memory
