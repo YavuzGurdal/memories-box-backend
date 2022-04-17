@@ -9,6 +9,8 @@ dotenv.config() // .dotenv icindeki anahtarlari bu sekilde kullanabiliyoruz
 
 const app = express() // server i bu sekilde olusturuyoruz. suan bir express server olusturduk.
 
+app.use(express.json({ limit: '20mb' })) // ***** gelen json larin ayristirilmasini sagliyor. ayrica burda gelen data icin limit verebiliyoruz
+
 app.use('/memories', memoryRouter) // 1.parametre dinleyecegimiz url. 2.parametre bu url'e gelecek istekleri kimin karsilayacagi
 
 // app.get('/', (req, res) => {
