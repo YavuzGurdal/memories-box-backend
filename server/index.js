@@ -11,6 +11,8 @@ const app = express() // server i bu sekilde olusturuyoruz. suan bir express ser
 
 app.use(express.json({ limit: '20mb' })) // ***** gelen json larin ayristirilmasini sagliyor. ayrica burda gelen data icin limit verebiliyoruz
 
+app.use(cors()) // backend de localhost tan gelen isteklere cevap verilmesini saglamk icin. yoks problem oluyor
+
 app.use('/memories', memoryRouter) // 1.parametre dinleyecegimiz url. 2.parametre bu url'e gelecek istekleri kimin karsilayacagini belirtiyor
 
 // app.get('/', (req, res) => {

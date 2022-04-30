@@ -65,12 +65,11 @@ router.put('/:id', async (req, res) => {
 
         const updatedMemory = await Memory.findByIdAndUpdate(
             id,
-            { _id: id, title, content, creator, image },
+            { _id: id, title, content, creator, image }, // _id: id bunu yazmasakda oluyor. aslinda kendi ona gore guncelliyor
             { new: true } // update edilen datayi dondurmesi icin. burda update edilen memoryyi donduruyor
         )
 
         res.status(200).json(updatedMemory)
-
     } catch (error) {
         res.json({ message: 'Memory update failed' })
     }
@@ -85,7 +84,7 @@ router.delete('/:id', async (req, res) => {
             res.status(404).json({ message: 'Memory id is not valid' })
         }
 
-        await Memory.findOneAndDelete(id)
+        await Memory.findOneAndDelete({ _id: id }) // burasi onemli. yoksa hata veriyor
 
         res.status(200).json({ message: 'Memory has been deleted' })
     } catch (error) {
