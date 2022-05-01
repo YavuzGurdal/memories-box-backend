@@ -1,3 +1,5 @@
+// db'ye nasil kaydedilecegini burada belirliyorum
+
 import mongoose from "mongoose";
 
 const memoSchema = mongoose.Schema({ // icerik icin bu semayi olusturduk

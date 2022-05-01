@@ -1,3 +1,5 @@
+// db'ye nasil kaydedilecegini burada belirliyorum
+
 import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema({

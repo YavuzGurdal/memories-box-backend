@@ -48,13 +48,30 @@ router.post('/signup', async (req, res) => {
         )
 
         await TokenModel.create({
-            userId: user._id,
+            userId: user._id, // bu modeldeki userId'ye user'in id'sini atiyorum. bu sekilde hangi tokrn'in hangi user'a ait oldugunu bulabilecegim 
             refreshToken: refreshToken,
         })
 
         res.status(200).json({ user, accessToken }) // en son bu degerleri donduruyorum
     } catch (error) {
         console.log(error)
+    }
+})
+
+// LOGOUT
+router.get('/logout/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+
+        await TokenModel.findByIdAndUpdate(
+            id,
+            { refreshToken: null },
+            { new: true }
+        )
+
+        res.status(200).json({ message: 'Successfully Logged Out' })
+    } catch (error) {
+        res.status(500).json(error)
     }
 })
 
