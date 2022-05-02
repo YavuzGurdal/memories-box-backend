@@ -75,7 +75,7 @@ router.post('/signin', async (req, res) => {
             { email: user.email, id: user._id },
             process.env.ACCESS_TOKEN_SECRET, //.dotenv index.js de cagirdigim icin burda kullanabilirim
             {
-                expiresIn: '3m', //access token'in suresi
+                expiresIn: '3m', //access token'in suresi.
             }
         )
 
