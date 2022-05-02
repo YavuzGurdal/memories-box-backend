@@ -58,13 +58,52 @@ router.post('/signup', async (req, res) => {
     }
 })
 
+// LOGIN
+router.post('/signin', async (req, res) => {
+    try {
+        const { email, password } = req.body // formdan gonderilen bilgileri yakaliyorum
+
+        const user = await User.findOne({ email }) // find ile gelen email ile db de ayni email varsa bilgilerini aliyorum
+
+        if (!user) return res.status(404).json({ message: 'User not found' })
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password) // gelen password ile db'deki password'u karsilastiriyoruz
+
+        if (!isPasswordCorrect) return res.status(404).json({ message: 'Check your login information and try again' })
+
+        const accessToken = jwt.sign(
+            { email: user.email, id: user._id },
+            process.env.ACCESS_TOKEN_SECRET, //.dotenv index.js de cagirdigim icin burda kullanabilirim
+            {
+                expiresIn: '3m', //access token'in suresi
+            }
+        )
+
+        const refreshToken = jwt.sign(
+            { email: user.email, id: user._id },
+            process.env.REFRESH_TOKEN_SECRET,
+        )
+
+        await TokenModel.findOneAndUpdate(
+            { userId: user._id },
+            { refreshToken: refreshToken },
+            { new: true }
+        )
+
+        res.status(200).json({ user, accessToken })
+
+    } catch (error) {
+        res.status(500).json({ message: 'Something wrong' })
+    }
+})
+
 // LOGOUT
 router.get('/logout/:id', async (req, res) => {
     try {
         const { id } = req.params
 
         await TokenModel.findOneAndUpdate( // burasi onemli
-            { "userId": id },
+            { userId: id }, // burda neye gore bulacagini yaziyoruz
             { refreshToken: null },
             { new: true }
         )
