@@ -63,8 +63,8 @@ router.get('/logout/:id', async (req, res) => {
     try {
         const { id } = req.params
 
-        await TokenModel.findByIdAndUpdate(
-            id,
+        await TokenModel.findOneAndUpdate( // burasi onemli
+            { "userId": id },
             { refreshToken: null },
             { new: true }
         )

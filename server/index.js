@@ -25,7 +25,7 @@ app.listen(process.env.PORT, () => { // hangi porttan islem yapilacagini burda y
     mongoose.connect(process.env.MONGO_URI, { // burdan db ye baglaniyorum
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        //useFindAndModify: true,
+        //useFindAndModify: false,
     })
         .then(() => console.log('db connected'))
         .catch((err) => console.log(err))
