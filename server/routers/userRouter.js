@@ -75,7 +75,7 @@ router.post('/signin', async (req, res) => {
             { email: user.email, id: user._id },
             process.env.ACCESS_TOKEN_SECRET, //.dotenv index.js de cagirdigim icin burda kullanabilirim
             {
-                expiresIn: '3m', //access token'in suresi.
+                expiresIn: '15s', //access token'in suresi.
             }
         )
 
@@ -111,6 +111,30 @@ router.get('/logout/:id', async (req, res) => {
         res.status(200).json({ message: 'Successfully Logged Out' })
     } catch (error) {
         res.status(500).json(error)
+    }
+})
+
+// REFRESHTOKEN
+router.get('/refresh/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const { refreshToken } = await TokenModel.findOne({ userId: id }) // userId'si id'ye esit olan kullanicinin refreshToken'ini almis oluyorum
+        //console.log(refreshToken)
+        if (!refreshToken) return res.sendStatus(401)
+
+        //res.status(200).json({ refreshToken })
+        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, x) => { // bu sekilde dogrulama yapiyorum // (err,decodedRefreshToken) ilk parametre error ikinci parametre token cozulmus hali
+            if (err) return res.status(403).json(err)
+            //console.log(x.id)
+            const accessToken = jwt.sign(
+                { email: x.email, id: x.id },
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: '15s' }
+            )
+            res.status(200).json(accessToken)
+        })
+    } catch (error) {
+        console.log(error.message)
     }
 })
 
