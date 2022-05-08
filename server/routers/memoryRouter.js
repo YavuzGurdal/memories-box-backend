@@ -2,6 +2,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 
+import auth from '../middleware/auth.js'
+
 import Memory from '../db/memoryModel.js' // sonuna js ekliyorum. package.json "type": "module" yazdigim icin. diger turlu hata veriyor
 
 const router = express.Router() // express den geliyor
@@ -40,11 +42,14 @@ router.get('/:id', async (req, res) => {
 })
 
 // CREATE A MEMORY
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     try {
         const memory = req.body // kullanicinin yaptigi req'in icindeki body nin icinden bu bilgileri aldim
 
-        const createdMemory = await Memory.create(memory) // create metodunu kullandim // mongoose metodu
+        const createdMemory = await Memory.create({ // create metodunu kullandim // mongoose metodu
+            ...memory,
+            creatorId: req.creatorId,
+        })
 
         res.status(201).json(createdMemory)
     } catch (error) {
@@ -53,7 +58,7 @@ router.post('/', async (req, res) => {
 })
 
 // UPDATE A MEMORY
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
     try {
         const { id } = req.params // bu sekilde id'yi direk alabiliyorum. kullanicin yaptigi request icinde bu bilgi mevcut olacak
 
@@ -76,7 +81,7 @@ router.put('/:id', async (req, res) => {
 })
 
 // DELETE A MEMORY
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     try {
         const { id } = req.params // bu sekilde id'yi direk alabiliyorum. kullanicin yaptigi request icinde bu bilgi mevcut olacak
 
