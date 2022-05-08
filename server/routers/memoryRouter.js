@@ -66,7 +66,17 @@ router.put('/:id', auth, async (req, res) => {
             res.status(404).json({ message: 'Memory id is not valid' })
         }
 
+        // Memory Authorization
+        const oldMemory = await Memory.findById(id)
+        if (req.creatorId !== oldMemory.creatorId) return res.sendStatus(403)
+
         const { title, content, creator, image } = req.body
+
+        // const updatedMemory = await Memory.findOneAndUpdate(
+        //     { _id: id },
+        //     { title, content, creator, image }, // _id: id bunu yazmasakda oluyor. aslinda kendi ona gore guncelliyor
+        //     { new: true } // update edilen datayi dondurmesi icin. burda update edilen memoryyi donduruyor
+        // )
 
         const updatedMemory = await Memory.findByIdAndUpdate(
             id,
@@ -88,6 +98,10 @@ router.delete('/:id', auth, async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(id)) { // id mongodb id'si degilse demek
             res.status(404).json({ message: 'Memory id is not valid' })
         }
+
+        // Memory Authorization
+        const oldMemory = await Memory.findById(id)
+        if (req.creatorId !== oldMemory.creatorId) return res.sendStatus(403)
 
         await Memory.findOneAndDelete({ _id: id }) // burasi onemli. yoksa hata veriyor
 

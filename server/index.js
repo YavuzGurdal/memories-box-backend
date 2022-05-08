@@ -5,6 +5,7 @@ import dotenv from 'dotenv'; // hassas bilgileri burada tutuyoruz
 
 import memoryRouter from './routers/memoryRouter.js' // sonuna js ekliyorum. package.json "type": "module" yazdigim icin. diger turlu hata veriyor
 import userRouter from './routers/userRouter.js' // sonuna js ekliyorum. package.json "type": "module" yazdigim icin. diger turlu hata veriyor
+import cookieParser from 'cookie-parser';
 
 dotenv.config() // .dotenv icindeki anahtarlari bu sekilde kullanabiliyoruz
 
@@ -12,7 +13,10 @@ const app = express() // server i bu sekilde olusturuyoruz. suan bir express ser
 
 app.use(express.json({ limit: '20mb' })) // ***** gelen json larin ayristirilmasini sagliyor. ayrica burda gelen data icin limit verebiliyoruz
 
-app.use(cors()) // backend de localhost tan gelen isteklere cevap verilmesini saglamk icin. yoks problem oluyor
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' })) // backend de localhost tan gelen isteklere cevap verilmesini saglamak icin. yoksa problem oluyor
+// credentials: true, origin: 'http://localhost:8080' bunlari cookieleri frontende gonderip islem yapabilmek icin yazdim
+
+app.use(cookieParser()) // frontend'den gelen cookie'leri okumami sagliyor
 
 app.use('/memories', memoryRouter) // 1.parametre dinleyecegimiz url. 2.parametre bu url'e gelecek istekleri kimin karsilayacagini belirtiyor
 app.use('/users', userRouter) // 1.parametre dinleyecegimiz url. 2.parametre bu url'e gelecek istekleri kimin karsilayacagini belirtiyor

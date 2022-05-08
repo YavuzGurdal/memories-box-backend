@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 
 const auth = async (req, res, next) => {
     try {
-        const accessToken = req.headers.authorization.split(' ')[1] // axios icindeki index.js'den bunu header icinde gonderdim. burda yakaliyorum
+        const accessToken = req.headers.authorization?.split(' ')[1] // axios icindeki index.js'den bunu header icinde gonderdim. burda yakaliyorum
 
         jwt.verify(
             accessToken,

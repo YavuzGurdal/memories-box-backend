@@ -52,6 +52,12 @@ router.post('/signup', async (req, res) => {
             refreshToken: refreshToken,
         })
 
+        // COOKIE
+        res.cookie('token', refreshToken, {
+            httpOnly: true, // token bilgilerinin tarayicida gorunmesini engelliyor
+            sameSite: 'strict', // 3.parti sitelerden yapilan isteklere cevap verilmeyecek. yani sadece cors'da belirttigimix originden gelen istekleri kabul edecek
+        })
+
         res.status(200).json({ user, accessToken }) // en son bu degerleri donduruyorum
     } catch (error) {
         console.log(error)
@@ -90,6 +96,12 @@ router.post('/signin', async (req, res) => {
             { new: true }
         )
 
+        // COOKIE
+        res.cookie('token', refreshToken, {
+            httpOnly: true, // token bilgilerinin tarayicida gorunmesini engelliyor
+            sameSite: 'strict', // 3.parti sitelerden yapilan isteklere cevap verilmeyecek. yani sadece cors'da belirttigimix originden gelen istekleri kabul edecek
+        })
+
         res.status(200).json({ user, accessToken })
 
     } catch (error) {
@@ -101,6 +113,8 @@ router.post('/signin', async (req, res) => {
 router.get('/logout/:id', async (req, res) => {
     try {
         const { id } = req.params
+
+        res.clearCookie('token') // cookie'yi siliyorum
 
         await TokenModel.findOneAndUpdate( // burasi onemli
             { userId: id }, // burda neye gore bulacagini yaziyoruz
@@ -121,6 +135,12 @@ router.get('/refresh/:id', async (req, res) => {
         const { refreshToken } = await TokenModel.findOne({ userId: id }) // userId'si id'ye esit olan kullanicinin refreshToken'ini almis oluyorum
         //console.log(refreshToken)
         if (!refreshToken) return res.sendStatus(401)
+
+        // COOKIE
+        const cookie = req.cookies.token
+        if (!cookie) res.sendStatus(403)
+
+        if (cookie !== refreshToken) res.sendStatus(401)
 
         //res.status(200).json({ refreshToken })
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, x) => { // bu sekilde dogrulama yapiyorum // (err,decodedRefreshToken) ilk parametre error ikinci parametre token cozulmus hali
