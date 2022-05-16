@@ -100,6 +100,7 @@ router.post('/signin', async (req, res) => {
         res.cookie('token', refreshToken, {
             httpOnly: true, // token bilgilerinin tarayicida gorunmesini engelliyor
             sameSite: 'strict', // 3.parti sitelerden yapilan isteklere cevap verilmeyecek. yani sadece cors'da belirttigimix originden gelen istekleri kabul edecek
+            secure: true // sadece https den gelen istekler alinacak
         })
 
         res.status(200).json({ user, accessToken })

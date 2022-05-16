@@ -13,7 +13,8 @@ const app = express() // server i bu sekilde olusturuyoruz. suan bir express ser
 
 app.use(express.json({ limit: '20mb' })) // ***** gelen json larin ayristirilmasini sagliyor. ayrica burda gelen data icin limit verebiliyoruz
 
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' })) // backend de localhost tan gelen isteklere cevap verilmesini saglamak icin. yoksa problem oluyor
+app.use(cors({ credentials: true, origin: 'https://memoriesbox.netlify.app/' })) // backend de localhost tan gelen isteklere cevap verilmesini saglamak icin. yoksa problem oluyor
+//app.use(cors({ credentials: true, origin: 'http://localhost:3000' })) // backend de localhost tan gelen isteklere cevap verilmesini saglamak icin. yoksa problem oluyor
 // credentials: true, origin: 'http://localhost:8080' bunlari cookieleri frontende gonderip islem yapabilmek icin yazdim
 
 app.use(cookieParser()) // frontend'den gelen cookie'leri okumami sagliyor
