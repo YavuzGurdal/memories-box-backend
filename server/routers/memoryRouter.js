@@ -80,7 +80,7 @@ router.put('/:id', auth, async (req, res) => {
 
         const updatedMemory = await Memory.findByIdAndUpdate(
             id,
-            { _id: id, title, content, creator, image }, // _id: id bunu yazmasakda oluyor. aslinda kendi ona gore guncelliyor
+            { title, content, creator, image }, // _id: id bunu yazmasakda oluyor. aslinda kendi ona gore guncelliyor
             { new: true } // update edilen datayi dondurmesi icin. burda update edilen memoryyi donduruyor
         )
 
